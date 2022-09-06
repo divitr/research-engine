@@ -131,7 +131,7 @@ def generate_summary(text):
 
   output = model.generate(input_ids, attention_mask=attention_mask)
 
-  return tokenizer.decode(output[0], skip_special_tokens=True)
+  return capitalize(tokenizer.decode(output[0], skip_special_tokens=True))
 
 #summarizes chunks of text
 def summarize(chunks):
