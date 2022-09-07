@@ -20,6 +20,7 @@ from googlesearch import search
 from mechanize import Browser
 import json
 
+#defines tokenizer, summarization model, and keyphrase extraction model
 def init():
     global device
     global tokenizer
@@ -30,6 +31,7 @@ def init():
     model = EncoderDecoderModel.from_pretrained('mrm8488/bert-small2bert-small-finetuned-cnn_daily_mail-summarization').to(device)
     kw_model = KeyBERT()
 
+#extracts body text from url
 def get_text(url):
   article = Article(url)
   article.download()
@@ -58,6 +60,10 @@ def get_text(url):
     return article.text
   return None
 
+#returns three parallel lists (len <= 10):
+#.  urls - list of urls
+#.  titles - list of titles of webpages
+#.  texts - list of body text of webpages
 def get_search_results(searchTerm):
   urls = []
   for url in search(searchTerm,num_results=20):
@@ -88,6 +94,7 @@ def get_search_results(searchTerm):
     texts.append(text)
   return final_urls,titles,texts
 
+#generates summary of text
 def generate_summary(text):
   inputs = tokenizer([text], padding="max_length", truncation=True, max_length=512, return_tensors="pt")
   input_ids = inputs.input_ids.to(device)
@@ -99,6 +106,7 @@ def generate_summary(text):
 
   return '. '.join(list(map(lambda x: x.strip().capitalize(), st.split('.'))))
 
+#generate_summary function wrapper
 def summarize(chunks):
   tot_summary = str()
   for chunk in chunks:
@@ -106,6 +114,7 @@ def summarize(chunks):
     tot_summary = tot_summary + summary
   return tot_summary
 
+#chunks text so that it fits NLP bounds
 def chunker(text):
   max_chunk = 500
   pages = []
@@ -129,11 +138,13 @@ def chunker(text):
 
   return chunks
 
+#returns 3 keyphrases from text (2 words or less)
 def keywords(text):
   keywords = kw_model.extract_keywords(text, keyphrase_ngram_range=(1, 2), stop_words='english', top_n=3, use_mmr=True)
   final_keywords = [keyword[0] for keyword in keywords]
   return final_keywords
 
+#generates dictionary
 def generate_dict(url,title,summary,keyphrases):
   d = {'url' : url,
        'title' : title,
@@ -141,6 +152,7 @@ def generate_dict(url,title,summary,keyphrases):
        'keyphrases' : keyphrases}
   return d
 
+#generates summary and extracts keyphrases, returns dictionary
 def process_url(url,title,text):
   chunks = chunker(text)
   summary = summarize(chunks)
