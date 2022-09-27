@@ -52,7 +52,7 @@
   }
   
   async function getSummary(data) {
-    const summary = await fetch("http://127.0.0.1:5000/summarize", {
+    const summary = await fetch("http://13.56.247.176:5000/summarize", {
     // const summary = await fetch("http://127.0.0.1:5000/testsummary", {
       method: "POST",
       headers: {
@@ -196,7 +196,7 @@
   }
 
   async function getInfo(query) {
-    const texts = await fetch(`http://127.0.0.1:5000/info/${query}`)
+    const texts = await fetch(`http://13.56.247.176:5000/info/${query}`)
     // const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
     let data = await texts.json()
     data.forEach(el => {
