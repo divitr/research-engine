@@ -19,7 +19,7 @@
 
   let summary = undefined;
   let articles = undefined;
-  let startPage = false;
+  let startPage = true;
 
 
   pagetexts.subscribe(value => {
