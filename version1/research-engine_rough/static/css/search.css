@@ -1,0 +1,51 @@
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+.form-search {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-search .form-search-heading,
+.form-search .checkbox {
+  margin-bottom: 10px;
+}
+.form-search .checkbox {
+  font-weight: normal;
+}
+.form-search .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-search .form-control:focus {
+  z-index: 2;
+}
+
+.form-search input[type="submit"] {
+  margin-left: 10px;
+}
+
+.form-search input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-search input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-search input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
