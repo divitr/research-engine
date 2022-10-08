@@ -17,7 +17,7 @@
   let texts
 
   let summary = undefined;
-  let articles = undefined;
+  let articles
   let startPage = true;
 
 
@@ -34,17 +34,17 @@
     }
   })
 
+  relaventArticles.subscribe(val => {articles = val})
+  
   // every time a new summary loads in, push it into the summaries list
 
   async function handleMessage(event) {
     if (event.detail.text == "Go") {
       // resets the articles and summaries for a new search term
-      if (articles || summary) {
-        summary = undefined;
-        articles = undefined;
-      }
+      articles = undefined;
+      summary = undefined;
       startPage = false;
-      articles = getArticles($query);
+      relaventArticles.set(await getArticles($query))
       getInfo($query)
     }
   }
@@ -246,29 +246,23 @@
     <h2 class="font-bold text-3xl">Relevant Papers</h2>
     <div class="divider divider-vertical my-2" />
     <div class="overflow-y-auto w-full scrollbar relative">
-      {#if !articles}
+      {#if !$relaventArticles}
         <p class="font-bold text-xl text-center">
           Enter A Search Term to Begin!
         </p>
       {:else}
-        {#await articles}
-          <p>Loading...</p>
-        {:then articles}
-          {#if articles.length}
-            {#each articles as hit}
-              <Article
-                paperurl={hit.urls}
-                paperTitle={hit.title}
-                authors={hit.authors}
-                abstract={hit.abstract}
-              />
-            {/each}
-          {:else}
-            <p>No Results for "{$query}"</p>
-          {/if}
-        {:catch err}
-          <p>{err}</p>
-        {/await}
+        {#if $relaventArticles.length}
+          {#each $relaventArticles as hit}
+            <Article
+              paperurl={hit.urls}
+              paperTitle={hit.title}
+              authors={hit.authors}
+              abstract={hit.abstract}
+            />
+          {/each}
+        {:else}
+          <p>No Results for "{$query}"</p>
+        {/if}
       {/if}
     </div>
   </div>
