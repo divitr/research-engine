@@ -6,7 +6,7 @@
   import Startpage from "./components/Startpage.svelte";
   import Loading from "./components/Loading.svelte";
   import { fade } from "svelte/transition";
-  import { pagetexts,query } from "./stores.js"
+  import { pagetexts, query, relaventArticles } from "./stores.js"
   import { onDestroy } from "svelte";
 
   let multidoc;
