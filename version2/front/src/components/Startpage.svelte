@@ -41,7 +41,7 @@
       </svg>
     </span> -->
     <h2 class="font-bold text-3xl text-gray-400">
-      Reasearch Search Engine
+      Research Search Engine
     </h2>
   </span>
   <span class="w-3/4 m-5">
