@@ -61,8 +61,8 @@
   }
   
   async function getSummary(data) {
-    // const summary = await fetch("http://127.0.0.1:5000/summarize", {
-    const summary = await fetch("http://127.0.0.1:5000/testsummary", {
+    const summary = await fetch("http://127.0.0.1:5000/summarize", {
+//     const summary = await fetch("http://127.0.0.1:5000/testsummary", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -206,8 +206,8 @@
   }
 
   async function getInfo(query) {
-    // const texts = await fetch(`http://127.0.0.1:5000/info/${query}`, {signal: controller.signal})
-    const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
+    const texts = await fetch(`http://127.0.0.1:5000/info/${query}`, {signal: controller.signal})
+//     const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
     let data = await texts.json()
     data.forEach(el => {
       // console.log(el)
