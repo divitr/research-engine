@@ -12,7 +12,7 @@
 
 
   let algoModalOpen = false
-  let usModalOpen = true
+  let usModalOpen = false
 
   let multidoc;
   let multiDocString = ""
@@ -23,7 +23,7 @@
 
   let summary = undefined;
   let articles
-  let startPage = false;
+  let startPage = true;
 
   const controller = new AbortController()
 
@@ -61,8 +61,8 @@
   }
   
   async function getSummary(data) {
-    const summary = await fetch("http://127.0.0.1:5000/summarize", {
-    // const summary = await fetch("http://127.0.0.1:5000/testsummary", {
+    // const summary = await fetch("http://127.0.0.1:5000/summarize", {
+    const summary = await fetch("http://127.0.0.1:5000/testsummary", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -206,8 +206,8 @@
   }
 
   async function getInfo(query) {
-    const texts = await fetch(`http://127.0.0.1:5000/info/${query}`, {signal: controller.signal})
-    // const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
+    // const texts = await fetch(`http://127.0.0.1:5000/info/${query}`, {signal: controller.signal})
+    const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
     let data = await texts.json()
     data.forEach(el => {
       // console.log(el)
@@ -302,7 +302,9 @@
 
 <main class="bg-base-100 absolute max-h-screen top-0 bottom-0 left-0 right-0">
   <div class="flex items-center justify-between bg-neutral border border-t-0 border-l-0 border-r-0 border-b-gray-400 h-16 p-2 w-full">
-    <Searchbar val={$query} on:message={handleMessage} />
+    <span class='w-1/2'>
+      <Searchbar val={$query} on:message={handleMessage} />
+    </span>
     <span class="flex gap-5 text-gray-400 mx-5">
       <button class="btn modal-button" on:click={() => algoModalOpen = true}>About The Algorithm</button>
       <button class="btn modal-button" on:click={() => usModalOpen = true}>About Us</button>
