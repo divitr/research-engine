@@ -13,6 +13,7 @@ import bs4
 from googlesearch import search
 from mechanize import Browser
 import json
+from waitress import serve
 
 
 app = Flask(__name__)
@@ -248,4 +249,9 @@ def summ():
   time.sleep(3)
   return app.response_class(response=json.dumps(dataa), mimetype='application/json')
 
-app.run(debug=True)
+#app.run()
+#for testing run 1, for implementation run 2
+#1.
+waitress.serve(app.py)
+#2.
+#waitress.serve(app.py, host='0.0.0.0', port=80)
