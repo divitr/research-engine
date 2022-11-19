@@ -252,6 +252,6 @@ def summ():
 #app.run()
 #for testing run 1, for implementation run 2
 #1.
-waitress.serve(app.py)
+serve(app.py)
 #2.
-#waitress.serve(app.py, host='0.0.0.0', port=80)
+serve(app.py, host='0.0.0.0', port=80)
