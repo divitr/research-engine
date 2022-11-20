@@ -62,11 +62,41 @@ def get_text(url):
     return article.text
   return None
 
+#returns first x search results
+def get_search_results(searchTerm, numResults):
+  urls = []
+  for url in search(searchTerm,num_results=numResults):
+    urls.append(url)
+  return urls
+
+#returns dict w/ url, title, and text
+def extract(urls, index):
+  url = urls[index]
+  br = Browser()
+  try:
+    res = br.open(url)
+  except:
+    pass
+  data = res.get_data()
+
+  soup = BeautifulSoup(data, 'html.parser')
+  title = soup.find('title')
+  if title is None:
+    pass
+
+  text = get_text(url)
+  if text is None:
+    pass
+
+  data = {"url": url, "title": title.renderContents().decode("utf-8"), "text": text}
+  return data
+
+#DEPRECIATED, SEE GET SEARCH_RESULTS() AND EXTRACT()
 #returns three parallel lists (len <= 10):
 #.  urls - list of urls
 #.  titles - list of titles of webpages
 #.  texts - list of body text of webpages
-def get_search_results(searchTerm):
+def get_search_results_depreciated(searchTerm):
   urls = []
   for url in search(searchTerm,num_results=20):
     urls.append(url)
