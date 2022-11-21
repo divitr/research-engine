@@ -359,7 +359,7 @@
           Enter A Search Term to Begin!
         </p>
       {:else}
-        {#if !texts || !loaded}
+        {#if !texts}
           <Loading />
           <p class="font-bold text-xl text-center text-gray-400 my-3">
             Please allow a few minutes for results to populate
