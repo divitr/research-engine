@@ -11,8 +11,9 @@
   {#if summary}
     <p class="">{summary}</p>
   {:else}
-    <p class="font-bold text-lg">Loading summary...<br><br></p>
-    <p class="">{lines}</p>
+    <p class="font-bold text-lg">Generating summary<br><br></p>
+    <p class="">{lines} ...</p>
+    <!-- <p class="">{text}</p> -->
   {/if}
 
   <div class="divider divider-vertical bg-neutral my-2"></div>
@@ -24,6 +25,6 @@
       {/each}
     </div>
   {:else}
-    <p class="font-bold text-lg">Loading related terms...</p>
-  {/if}  
+    <p class="font-bold text-lg">Extracting keywords</p>
+  {/if}
 </div>
