@@ -5,6 +5,7 @@
   import Startpage from "./components/Startpage.svelte";
   import { fade } from "svelte/transition";
   import { pagetexts, query, relaventArticles } from "./stores.js"
+  import Loading from './icons/loading.svelte'
 
   import jURL from './icons/jonathan-sq.png'
   import dURL from './icons/divit-sq.png'
@@ -23,40 +24,40 @@
 
   let summary = undefined;
   let articles
-  let startPage = true;
+  let startPage = false;
 
-  const controller = new AbortController()
-
+  let controller = new AbortController
+  
+  let title
 
   pagetexts.subscribe(value => {
-    // console.log(`store value:`)
-    console.log(value)
     texts = value
     if (value) {
       if (value.every(el => el.hasOwnProperty('summary'))) {
         allDataLoaded = true
-        // console.log(multiDocString)
         getSummary({"url": "", "title": "MULTIDOC", "text": multiDocString})
       }
     }
   })
-
+  
   relaventArticles.subscribe(val => {articles = val})
   
   // every time a new summary loads in, push it into the summaries list
-
+  
   async function handleMessage(event) {
     if (event.detail.text == "Go") {
+      title = $query
       // resets the articles and summaries for a new search term
       articles = undefined;
       summary = undefined;
       startPage = false;
+      multiDocString = undefined
+      multidoc = undefined
+      $pagetexts = []
       if (texts) {
-        multiDocString = ""
-        multidoc = undefined
-        allDataLoaded = false
         texts = undefined
         controller.abort()
+        controller = new AbortController
       }
       relaventArticles.set(await getArticles($query))
       getInfo($query)
@@ -81,7 +82,7 @@
       multiDocString += ` ${a.summary}`
       pagetexts.update(val => {
         val.forEach((el, i) => {
-          if (el.title === a.title) {
+          if (el.url === a.url) {
             val[i] = {...val[i], ...a}
           }
         })
@@ -208,17 +209,41 @@
     return hits;
   }
 
+  async function getPageText(url) {
+    const pageText = await fetch(`http://127.0.0.1:5000/getPageText?url=${encodeURIComponent(url)}`, {signal: controller.signal})
+    let data = await pageText.json()
+    $pagetexts = [...$pagetexts, data]
+    getSummary(data)
+  }
+  
   async function getInfo(query) {
     const texts = await fetch(`http://127.0.0.1:5000/info/${query}`, {signal: controller.signal})
-    // const texts = await fetch(`http://127.0.0.1:5000/testinfo`)
+    // const texts = await fetch(`http://127.0.0.1:5000/testinfo`, {signal: controller.signal})
     let data = await texts.json()
+    console.log(data)
     data.forEach(el => {
-      // console.log(el)
-      getSummary(el)
+      getPageText(el.url)
     })
-    pagetexts.update(old => data)
-    getSummary({"url": "", "title": "MULTIDOC", "text": multiDocString})
   }
+
+  let loaded
+
+  setInterval(() => {
+    loaded = true
+    if ($pagetexts) {
+      $pagetexts.forEach(el => {
+        if (!el.hasOwnProperty('summary')) {
+          loaded = false
+        } else {
+          loaded = true
+        }
+      })
+    }
+    if (loaded) {
+      getSummary({"url": "", "title": "MULTIDOC", "text": multiDocString})
+    }
+
+  }, 1000)
 </script>
 
 {#if startPage}
@@ -226,6 +251,10 @@
     <Startpage on:message={handleMessage} />
   </div>
 {/if}
+
+<svelte:head>
+  <title>{title ? `${title} - Research Engine` : "Research Engine"}</title>
+</svelte:head>i
 
 <div class="modal" class:modal-open={algoModalOpen}>
   <div class="modal-box border border-[#9387fa] w-11/12 max-w-5xl text-gray-400">
@@ -317,9 +346,9 @@
     <div class="flex flex-col h-full w-1/2">
       {#if multidoc && allDataLoaded}
         <textarea
-        class="my-5 bg-neutral scrollbar textarea textarea-bordered h-80 text-gray-400"
-        placeholder="Multi doc summary"
-        bind:value={multidoc}
+          class="my-5 bg-neutral scrollbar textarea textarea-bordered h-60 text-gray-400"
+          placeholder="Multi doc summary"
+          bind:value={multidoc}
         />
       {/if}
       <span class="w-full flex items-center justify-center" />
@@ -330,8 +359,9 @@
           Enter A Search Term to Begin!
         </p>
       {:else}
-        {#if !texts}
-          <p class="font-bold text-xl text-center text-gray-400">
+        {#if !texts || !loaded}
+          <Loading />
+          <p class="font-bold text-xl text-center text-gray-400 my-3">
             Please allow a few minutes for results to populate
           </p>
         {/if}
