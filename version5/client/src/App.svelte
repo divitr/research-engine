@@ -24,7 +24,7 @@
 
   let summary = undefined;
   let articles
-  let startPage = false;
+  let startPage = true;
 
   let controller = new AbortController
   
